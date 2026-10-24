@@ -144,7 +144,7 @@ struct WellbeingEditor: View {
                 }
         }.onAppear {
             let day = store.record(on: date)
-            energy = day.energy; wellbeing = day.wellbeing; comment = day.comment
+            energy = day.energy ?? 3; wellbeing = day.wellbeing; comment = day.comment
         }
     }
 }

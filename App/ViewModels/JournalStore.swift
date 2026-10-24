@@ -157,7 +157,7 @@ final class JournalStore: ObservableObject {
         lines += ["", "Незавершённые и пропущенные занятия за 7 дней: " + (missed.isEmpty ? "нет" : missed.map(DayKey.string).joined(separator: ", ")), "", "Питание:"]
         lines += day.meals.isEmpty ? ["Пока нет записей"] : day.meals.map { "• \($0.category): \($0.text.isEmpty ? "Фото без описания" : $0.text)" }
         lines += ["", "Шаги: \(day.steps.map(String.init) ?? "нет данных")\(day.manualSteps != nil ? " (вручную)" : "")",
-                  "Энергия: \(day.energy)/5", "Самочувствие: \(day.wellbeing.isEmpty ? "не записано" : day.wellbeing)",
+                  "Энергия: \(day.energy.map { "\($0)/5" } ?? "не записана")", "Самочувствие: \(day.wellbeing.isEmpty ? "не записано" : day.wellbeing)",
                   "Комментарий: \(day.comment.isEmpty ? "нет" : day.comment)", "", "Поддержи меня доброжелательно, без оценок еды, внешности и пропусков. Нагрузку увеличиваем только по моему желанию."]
         return lines.joined(separator: "\n")
     }

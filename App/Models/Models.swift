@@ -81,7 +81,7 @@ struct DayRecord: Codable, Equatable {
     var meals: [Meal] = []
     var manualSteps: Int?
     var healthSteps: Int?
-    var energy = 3
+    var energy: Int?
     var wellbeing = ""
     var comment = ""
     var steps: Int? { manualSteps ?? healthSteps }
@@ -123,7 +123,7 @@ struct AppData: Codable, Equatable {
         }
         guard schedule.allSatisfy({ validExercises($0.exercises) && $0.title.count <= 200 }), days.count <= 40000 else { throw DataError.invalidBackup }
         for (key, day) in days {
-            guard DayKey.date(key) != nil, (1...5).contains(day.energy),
+            guard DayKey.date(key) != nil, day.energy.map({ (1...5).contains($0) }) ?? true,
                   day.manualSteps.map({ (0...200000).contains($0) }) ?? true,
                   day.healthSteps.map({ $0 >= 0 }) ?? true,
                   Set(day.meals.map(\.id)).count == day.meals.count,

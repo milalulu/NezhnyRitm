@@ -107,6 +107,7 @@ final class JournalTests: XCTestCase {
         let s = store()
         s.updateDay(Date()) { $0.meals = [Meal(category: "Ужин", text: "Паста")]; $0.manualSteps = 567; $0.wellbeing = "Хорошо"; $0.comment = "Погуляла" }
         let report = s.report(on: Date())
+        XCTAssertTrue(report.contains("Энергия: не записана"))
         for text in ["Отчёт для Астраси", "Паста", "567", "Хорошо", "Погуляла", "по моему желанию"] { XCTAssertTrue(report.contains(text)) }
     }
 }
