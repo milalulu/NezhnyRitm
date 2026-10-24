@@ -22,6 +22,8 @@ final class FlowTests: XCTestCase {
         XCTAssertTrue(steps.waitForExistence(timeout: 3))
         steps.tap(); steps.typeText("2345")
         app.buttons["Сохранить шаги"].tap()
+        XCTAssertTrue(app.staticTexts["stepsSaved"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.tabBars.buttons["Мой ритм"].waitForExistence(timeout: 5))
         app.swipeDown()
         capture("03-steps", app: app)
         app.tabBars.buttons["Мой ритм"].tap()

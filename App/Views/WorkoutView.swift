@@ -88,7 +88,7 @@ struct ExerciseCard: View {
                     let done = session.completed[exercise.id.uuidString]?.contains(index) ?? false
                     Button {
                         withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) { store.toggleSet(exercise, index: index, on: date) }
-                        if store.session(on: date).isComplete { Task { await reminders.apply(store: store) } }
+                        if store.session(on: date).isComplete != session.isComplete { Task { await reminders.apply(store: store) } }
                     } label: {
                         Label("\(index + 1)", systemImage: done ? "checkmark.circle.fill" : "circle")
                             .font(.headline).frame(maxWidth: .infinity, minHeight: 48)

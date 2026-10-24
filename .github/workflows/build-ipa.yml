@@ -25,10 +25,11 @@ jobs:
       - name: Unit and UI tests
         run: |
           set -o pipefail
+          mkdir -p build
           xcodebuild -project NezhnyRitm.xcodeproj -scheme NezhnyRitm \
             -configuration Debug -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
             -parallel-testing-enabled NO -resultBundlePath build/Tests.xcresult \
-            CODE_SIGNING_ALLOWED=NO test | tee /tmp/tests.log
+            CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
       - name: Build SideStore IPA
         run: bash scripts/package_ipa.sh Release NezhnyRitm
       - name: Build HealthKit variant
@@ -63,5 +64,5 @@ jobs:
           path: |
             build/Tests.xcresult
             build/Screenshots
-            /tmp/tests.log
+            build/tests.log
           retention-days: 14

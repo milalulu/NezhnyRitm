@@ -6,6 +6,7 @@ struct ActivityView: View {
     @EnvironmentObject private var health: HealthService
     @State private var manual = ""
     @State private var saved = false
+    @FocusState private var stepsFocused: Bool
     private var days: [Date] { DayKey.week(ending: store.selectedDate) }
     private var recordedDays: [Date] { days.filter { store.record(on: $0).steps != nil } }
     var body: some View {
@@ -38,11 +39,12 @@ struct ActivityView: View {
             }
             SoftCard(tint: .sky) {
                 SectionTitle(title: "Шаги вручную", symbol: "square.and.pencil")
-                TextField("Количество шагов", text: $manual).keyboardType(.numberPad).textFieldStyle(.roundedBorder).accessibilityIdentifier("manualSteps")
+                TextField("Количество шагов", text: $manual).keyboardType(.numberPad).textFieldStyle(.roundedBorder).accessibilityIdentifier("manualSteps").focused($stepsFocused)
                 Button("Сохранить шаги") {
                     guard let count = Int(manual), (0...200000).contains(count) else { return }
                     store.updateDay(store.selectedDate) { $0.manualSteps = count }
                     saved = store.error == nil
+                    if saved { stepsFocused = false }
                 }.buttonStyle(PrimaryButtonStyle()).disabled(Int(manual).map { !(0...200000).contains($0) } ?? true)
                 if saved { Text("Записано").font(.caption).accessibilityIdentifier("stepsSaved") }
                 if store.record(on: store.selectedDate).manualSteps != nil {
@@ -65,6 +67,12 @@ struct ActivityView: View {
             }
         }.dismissKeyboardOnScroll()
             .navigationTitle("Шаги").navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Готово") { stepsFocused = false }
+                }
+            }
             .onAppear { loadManual() }.onChange(of: store.selectedDate) { _ in loadManual() }
     }
     private func loadManual() { manual = store.record(on: store.selectedDate).manualSteps.map(String.init) ?? ""; saved = false }
