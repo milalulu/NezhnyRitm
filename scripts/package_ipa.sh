@@ -10,7 +10,7 @@ xcodebuild -project NezhnyRitm.xcodeproj -scheme NezhnyRitm \
 app="build/$configuration/Build/Products/$configuration-iphoneos/NezhnyRitm.app"
 test -f "$app/NezhnyRitm"
 /usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app/Info.plist"
-lipo -verify_arch arm64 "$app/NezhnyRitm"
+lipo "$app/NezhnyRitm" -verify_arch arm64
 # HealthKit entitlements must be embedded for resigners to discover them. This is
 # an ad-hoc marker, NOT an Apple development/distribution signature.
 if [[ "$configuration" == "HealthRelease" ]]; then

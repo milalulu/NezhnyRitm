@@ -20,16 +20,6 @@ jobs:
           brew install xcodegen
           xcodegen --version
           xcodegen generate
-      - name: Select available iPhone simulator
-        run: python3 scripts/select_simulator.py
-      - name: Unit and UI tests
-        run: |
-          set -o pipefail
-          mkdir -p build
-          xcodebuild -project NezhnyRitm.xcodeproj -scheme NezhnyRitm \
-            -configuration Debug -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
-            -parallel-testing-enabled NO -resultBundlePath build/Tests.xcresult \
-            CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
       - name: Build SideStore IPA
         run: bash scripts/package_ipa.sh Release NezhnyRitm
       - name: Build HealthKit variant
@@ -50,6 +40,16 @@ jobs:
           path: build/NezhnyRitm-HealthKit.ipa
           if-no-files-found: error
           retention-days: 90
+      - name: Select available iPhone simulator
+        run: python3 scripts/select_simulator.py
+      - name: Unit and UI tests
+        run: |
+          set -o pipefail
+          mkdir -p build
+          xcodebuild -project NezhnyRitm.xcodeproj -scheme NezhnyRitm \
+            -configuration Debug -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+            -parallel-testing-enabled NO -resultBundlePath build/Tests.xcresult \
+            CODE_SIGNING_ALLOWED=NO test | tee build/tests.log
       - name: Export UI screenshots
         if: always()
         run: |
