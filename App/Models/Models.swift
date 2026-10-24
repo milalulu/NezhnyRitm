@@ -60,8 +60,12 @@ struct WorkoutSession: Codable, Equatable {
     var requiredDone: Int {
         exercises.filter { !$0.optional }.reduce(0) { $0 + (completed[$1.id.uuidString]?.count ?? 0) }
     }
-    var isComplete: Bool { requiredTotal > 0 && requiredDone == requiredTotal && !skipped && movedTo == nil }
-    var progress: Double { requiredTotal > 0 ? Double(requiredDone) / Double(requiredTotal) : 0 }
+    var isComplete: Bool {
+        totalCount > 0 && (requiredTotal > 0 ? requiredDone == requiredTotal : doneCount == totalCount) && !skipped && movedTo == nil
+    }
+    var progress: Double {
+        requiredTotal > 0 ? Double(requiredDone) / Double(requiredTotal) : (totalCount > 0 ? Double(doneCount) / Double(totalCount) : 0)
+    }
 }
 
 struct Meal: Codable, Identifiable, Equatable {

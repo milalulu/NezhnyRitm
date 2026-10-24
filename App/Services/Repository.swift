@@ -21,7 +21,7 @@ struct Repository {
         return try encoder.encode(data)
     }
     func save(_ data: AppData) throws {
-        let bytes = try Self.encode(data)
+        let bytes = try Self.encode(data.validated())
         guard bytes.count <= 100_000_000 else { throw DataError.tooLarge }
         try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
         try bytes.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])

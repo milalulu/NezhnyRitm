@@ -21,17 +21,7 @@ jobs:
           xcodegen --version
           xcodegen generate
       - name: Select available iPhone simulator
-        run: |
-          xcrun simctl list devices available -j > /tmp/devices.json
-          python3 - <<'PY'
-          import json, os
-          groups=json.load(open('/tmp/devices.json'))['devices']
-          phones=[d for runtime,devices in sorted(groups.items(),reverse=True) if 'iOS' in runtime for d in devices if 'iPhone' in d['name'] and d.get('isAvailable')]
-          assert phones, 'No available iPhone simulator'
-          phone=next((d for d in phones if d['name']=='iPhone 16'),phones[0])
-          with open(os.environ['GITHUB_ENV'],'a') as f: f.write('SIMULATOR_ID='+phone['udid']+'\n')
-          print(phone['name'],phone['udid'])
-          PY
+        run: python3 scripts/select_simulator.py
       - name: Unit and UI tests
         run: |
           set -o pipefail
@@ -59,6 +49,12 @@ jobs:
           path: build/NezhnyRitm-HealthKit.ipa
           if-no-files-found: error
           retention-days: 90
+      - name: Export UI screenshots
+        if: always()
+        run: |
+          if [ -d build/Tests.xcresult ]; then
+            xcrun xcresulttool export attachments --path build/Tests.xcresult --output-path build/Screenshots || true
+          fi
       - name: Test results and screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -66,5 +62,6 @@ jobs:
           name: Test-results
           path: |
             build/Tests.xcresult
+            build/Screenshots
             /tmp/tests.log
           retention-days: 14

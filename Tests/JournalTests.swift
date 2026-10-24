@@ -34,6 +34,14 @@ final class JournalTests: XCTestCase {
         reloaded.toggleSet(exercise, index: 0, on: tuesday)
         XCTAssertFalse(reloaded.session(on: tuesday).isComplete)
     }
+    func testOptionalOnlySessionCanBeCompleted() {
+        let exercise = Exercise(name: "Прогулка", sets: 1, repetitions: "По желанию", technique: "", optional: true)
+        var session = WorkoutSession(title: "Свободное движение", exercises: [exercise])
+        XCTAssertFalse(session.isComplete)
+        session.completed[exercise.id.uuidString] = [0]
+        XCTAssertTrue(session.isComplete)
+        XCTAssertEqual(session.progress, 1)
+    }
     func testEditingPlanPreservesHistory() {
         let yesterday = DayKey.adding(-1, to: Date())
         let s = store(start: yesterday)

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import UserNotifications
 
 @MainActor
@@ -15,7 +16,8 @@ final class ReminderService: ObservableObject {
             } catch { message = error.localizedDescription; return }
         }
         let settings = await center.notificationSettings()
-        center.removeAllPendingNotificationRequests()
+        let pending = await center.pendingNotificationRequests()
+        center.removePendingNotificationRequests(withIdentifiers: pending.map(\.identifier).filter { $0.hasPrefix("meal-") || $0.hasPrefix("workout-") })
         guard settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional else {
             message = "Уведомления не разрешены. Дневник работает без них."
             return
