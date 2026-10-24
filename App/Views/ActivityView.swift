@@ -31,7 +31,8 @@ struct ActivityView: View {
                                 .foregroundStyle(Color.accent.gradient).cornerRadius(6)
                                 .accessibilityLabel(DayKey.title(date)).accessibilityValue("\(steps) шагов")
                         }
-                    }.chartXAxis { AxisMarks(values: .stride(by: .day)) { _ in AxisValueLabel(format: .dateTime.weekday(.narrow)) } }
+                    }.chartXScale(domain: DayKey.calendar.startOfDay(for: days[0])...DayKey.adding(1, to: DayKey.calendar.startOfDay(for: days[6])))
+                        .chartXAxis { AxisMarks(values: .stride(by: .day)) { _ in AxisValueLabel(format: .dateTime.weekday(.narrow)) } }
                         .frame(height: 190)
                     Text("Всего по записям: \(days.reduce(0) { $0 + (store.record(on: $1).steps ?? 0) }) · дней с данными: \(recordedDays.count)/7")
                         .font(.caption).foregroundStyle(.secondary)

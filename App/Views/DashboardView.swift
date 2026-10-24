@@ -12,7 +12,7 @@ struct DashboardView: View {
                     Text("МАЛЕНЬКИЕ ШАГИ К СЕБЕ").font(.caption2.weight(.semibold)).tracking(2).foregroundStyle(.secondary)
                     Text(store.data.preferences.name.isEmpty ? "Привет, это твой ритм" : "Привет, \(store.data.preferences.name)")
                         .font(.largeTitle.weight(.bold)).accessibilityIdentifier("greeting")
-                    Text(DayKey.title(Date()).capitalized).font(.subheadline).foregroundStyle(.secondary)
+                    Text(DayKey.title(Date())).font(.subheadline).foregroundStyle(.secondary)
                 }
                 Image(systemName: "sparkles").font(.system(size: 30)).foregroundStyle(Color.accent).padding(.top, 24)
             }
@@ -20,7 +20,9 @@ struct DashboardView: View {
             SoftCard(tint: .rose) {
                 Text("ДВИЖЕНИЕ И ЗАБОТА").font(.caption.weight(.semibold)).tracking(1.5)
                 Text(session.title).font(.title2.weight(.bold))
-                Text(store.status(on: store.selectedDate)).font(.subheadline).foregroundStyle(.secondary)
+                if store.status(on: store.selectedDate) != session.title {
+                    Text(store.status(on: store.selectedDate)).font(.subheadline).foregroundStyle(.secondary)
+                }
                 if !session.exercises.isEmpty && session.movedTo == nil {
                     ProgressView(value: session.progress).tint(.accent)
                     Text("\(session.requiredDone) из \(session.requiredTotal) основных подходов").font(.caption)
