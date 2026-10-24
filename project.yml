@@ -1,0 +1,52 @@
+name: NezhnyRitm
+options:
+  bundleIdPrefix: app.nezhnyritm
+  deploymentTarget:
+    iOS: '16.0'
+  developmentLanguage: ru
+  knownRegions: [ru, en]
+settings:
+  base:
+    SWIFT_VERSION: '5.9'
+    TARGETED_DEVICE_FAMILY: '1'
+    MARKETING_VERSION: '1.0.0'
+    CURRENT_PROJECT_VERSION: '1'
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+configs:
+  Debug: debug
+  Release: release
+  HealthRelease: release
+targets:
+  NezhnyRitm:
+    type: application
+    platform: iOS
+    sources: [App]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.nezhnyritm.NezhnyRitm
+        INFOPLIST_FILE: App/Resources/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      configs:
+        HealthRelease:
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) HEALTHKIT'
+          CODE_SIGN_ENTITLEMENTS: App/Resources/HealthKit.entitlements
+    scheme:
+      testTargets: [NezhnyRitmTests, NezhnyRitmUITests]
+  NezhnyRitmTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [Tests]
+    dependencies:
+      - target: NezhnyRitm
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+  NezhnyRitmUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    dependencies:
+      - target: NezhnyRitm
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES

@@ -1,0 +1,70 @@
+name: Build iPhone IPA
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ipa-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Xcode and XcodeGen
+        run: |
+          xcodebuild -version
+          brew install xcodegen
+          xcodegen --version
+          xcodegen generate
+      - name: Select available iPhone simulator
+        run: |
+          xcrun simctl list devices available -j > /tmp/devices.json
+          python3 - <<'PY'
+          import json, os
+          groups=json.load(open('/tmp/devices.json'))['devices']
+          phones=[d for runtime,devices in sorted(groups.items(),reverse=True) if 'iOS' in runtime for d in devices if 'iPhone' in d['name'] and d.get('isAvailable')]
+          assert phones, 'No available iPhone simulator'
+          phone=next((d for d in phones if d['name']=='iPhone 16'),phones[0])
+          with open(os.environ['GITHUB_ENV'],'a') as f: f.write('SIMULATOR_ID='+phone['udid']+'\n')
+          print(phone['name'],phone['udid'])
+          PY
+      - name: Unit and UI tests
+        run: |
+          set -o pipefail
+          xcodebuild -project NezhnyRitm.xcodeproj -scheme NezhnyRitm \
+            -configuration Debug -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+            -parallel-testing-enabled NO -resultBundlePath build/Tests.xcresult \
+            CODE_SIGNING_ALLOWED=NO test | tee /tmp/tests.log
+      - name: Build SideStore IPA
+        run: bash scripts/package_ipa.sh Release NezhnyRitm
+      - name: Build HealthKit variant
+        run: bash scripts/package_ipa.sh HealthRelease NezhnyRitm-HealthKit
+      - name: Checksums
+        run: shasum -a 256 build/*.ipa > build/SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NezhnyRitm-SideStore
+          path: |
+            build/NezhnyRitm.ipa
+            build/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        with:
+          name: NezhnyRitm-HealthKit
+          path: build/NezhnyRitm-HealthKit.ipa
+          if-no-files-found: error
+          retention-days: 90
+      - name: Test results and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Test-results
+          path: |
+            build/Tests.xcresult
+            /tmp/tests.log
+          retention-days: 14
