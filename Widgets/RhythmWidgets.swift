@@ -58,6 +58,8 @@ extension View {
 struct RhythmWidget: Widget {
     let kind: String
     let title: String
+    init() { kind = "plans"; title = "Сегодняшние планы" }
+    init(kind: String, title: String) { self.kind = kind; self.title = title }
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: RhythmProvider()) { RhythmWidgetView(entry: $0, kind: kind) }
             .configurationDisplayName(title).description("Немного заботы в твоём ритме. Данные включаются в настройках приватности.")
