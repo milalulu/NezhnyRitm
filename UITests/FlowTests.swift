@@ -64,7 +64,7 @@ final class FlowTests: XCTestCase {
         app.navigationBars.buttons.element(boundBy: 0).tap()
         reveal(app.buttons["openPet"], app: app)
         app.buttons["openPet"].tap()
-        XCTAssertTrue(app.otherElements["heartBalance"].exists || app.staticTexts["heartBalance"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["heartBalance"].firstMatch.waitForExistence(timeout: 5))
         capture("07-pet", app: app)
     }
     private func reveal(_ element: XCUIElement, app: XCUIApplication) {

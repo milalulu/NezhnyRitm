@@ -23,7 +23,7 @@ struct CatArt: View {
                 HStack(spacing: w * 0.28) { Circle().fill(Color.rose); Circle().fill(Color.rose) }.frame(width: w * 0.47, height: h * 0.08).offset(y: -h * 0.09)
                 Image(systemName: "heart.fill").font(.system(size: w * 0.045)).foregroundStyle(Color.ink).offset(y: -h * 0.09)
                 Text("ω").font(.system(size: w * 0.08, weight: .medium, design: .rounded)).foregroundStyle(Color.ink).offset(y: -h * 0.03)
-                if accessory == "bow" { Image(systemName: "gift.fill").font(.system(size: w * 0.14)).foregroundStyle(Color(red: 0.8, green: 0.32, blue: 0.5)).offset(y: h * 0.1) }
+                if accessory == "bow" { BowArt().frame(width: w * 0.19, height: w * 0.1).offset(y: h * 0.1) }
                 if accessory == "crown" { Image(systemName: "crown.fill").font(.system(size: w * 0.18)).foregroundStyle(.yellow).offset(y: -h * 0.44) }
             }.frame(width: w, height: h).scaleEffect(breathe && animate && !reduceMotion ? 1.02 : 1)
         }
@@ -35,3 +35,15 @@ struct CatArt: View {
     }
 }
 
+
+private struct BowArt: View {
+    var body: some View {
+        GeometryReader { g in
+            Path { p in
+                p.move(to: CGPoint(x: 0, y: 0)); p.addLine(to: CGPoint(x: g.size.width, y: g.size.height))
+                p.addLine(to: CGPoint(x: g.size.width, y: 0)); p.addLine(to: CGPoint(x: 0, y: g.size.height)); p.closeSubpath()
+            }.fill(Color(red: 0.8, green: 0.32, blue: 0.5))
+            Circle().fill(Color.rose).frame(width: g.size.height * 0.6, height: g.size.height * 0.6).position(x: g.size.width / 2, y: g.size.height / 2)
+        }
+    }
+}

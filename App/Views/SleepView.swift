@@ -13,6 +13,7 @@ struct SleepView: View {
                 SectionTitle(title: "Место для восстановления", symbol: "moon.stars")
                 Text(detail.sleepHours.map { String(format: "%.1f ч", $0) } ?? "Сон ещё не записан").font(.largeTitle.weight(.light))
                 Text(detail.sleep != nil ? "Ручная запись · дата пробуждения" : "Данные за сутки до полудня выбранного дня").font(.caption).foregroundStyle(.secondary)
+                if let quality = detail.sleep?.quality { Text("Ощущение отдыха: \(quality) из 5").font(.subheadline) }
                 if let note = detail.sleep?.note, !note.isEmpty { Text(note) }
                 Button { editing = true } label: { Label("Записать сон", systemImage: "plus") }.buttonStyle(PrimaryButtonStyle()).accessibilityIdentifier("addSleep")
                 if detail.sleep != nil { Button("Удалить ручную запись", role: .destructive) { store.saveSleep(nil, on: store.selectedDate) } }

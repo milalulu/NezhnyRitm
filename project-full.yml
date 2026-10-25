@@ -13,8 +13,7 @@ targets:
         FullRelease:
           SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) HEALTHKIT WIDGETS'
           CODE_SIGN_ENTITLEMENTS: App/Resources/Full.entitlements
-          INFOPLIST_KEY_NRAppGroup: group.app.nezhnyritm.shared
-          GENERATE_INFOPLIST_FILE: YES
+          INFOPLIST_FILE: App/Resources/FullInfo.plist
   RhythmWidgets:
     type: app-extension
     platform: iOS
