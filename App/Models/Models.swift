@@ -74,9 +74,11 @@ struct Meal: Codable, Identifiable, Equatable {
     var text: String
     var photo: Data?
     var createdAt = Date()
+    var details: MealDetails?
 }
 
 struct DayRecord: Codable, Equatable {
+    var details: DayDetails?
     var workout: WorkoutSession?
     var meals: [Meal] = []
     var manualSteps: Int?
@@ -100,7 +102,8 @@ struct Preferences: Codable, Equatable {
 }
 
 struct AppData: Codable, Equatable {
-    var version = 1
+    var version = 2
+    var wellness: WellnessData? = WellnessData()
     var startDay = DayKey.string(Date())
     var schedule = SeedProgram.make()
     // Preserve the plan that actually applied on each day, even before a day was opened.
@@ -108,7 +111,7 @@ struct AppData: Codable, Equatable {
     var preferences = Preferences()
 
     func validated() throws -> AppData {
-        guard version == 1, DayKey.date(startDay) != nil,
+        guard [1, 2].contains(version), DayKey.date(startDay) != nil,
               schedule.count == 7, Set(schedule.map(\.weekday)) == Set(1...7),
               Set(schedule.map(\.id)).count == 7,
               ["system", "light", "dark"].contains(preferences.theme),
@@ -139,6 +142,7 @@ struct AppData: Codable, Equatable {
                 }
             }
         }
+        try validateWellness()
         return self
     }
 }
