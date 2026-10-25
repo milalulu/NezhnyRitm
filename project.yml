@@ -9,8 +9,8 @@ settings:
   base:
     SWIFT_VERSION: '5.0'
     TARGETED_DEVICE_FAMILY: '1'
-    MARKETING_VERSION: '1.0.0'
-    CURRENT_PROJECT_VERSION: '1'
+    MARKETING_VERSION: '2.0.0'
+    CURRENT_PROJECT_VERSION: '2'
     ENABLE_USER_SCRIPT_SANDBOXING: YES
 configs:
   Debug: debug
@@ -20,7 +20,7 @@ targets:
   NezhnyRitm:
     type: application
     platform: iOS
-    sources: [App]
+    sources: [App, Shared]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.nezhnyritm.NezhnyRitm

@@ -56,6 +56,17 @@ struct DashboardView: View {
                         .font(.subheadline).foregroundStyle(.secondary).lineLimit(3)
                 }
             }.buttonStyle(.plain)
+            NavigationLink { RoutinesView() } label: {
+                SoftCard(tint: .lavender) {
+                    Label("Маленькие привычки", systemImage: "checkmark.circle").font(.headline)
+                    Text("Сон, прогулки и забота о себе — в своём ритме").font(.subheadline)
+                }
+            }.buttonStyle(.plain)
+            HStack {
+                NavigationLink { SleepView() } label: { Label("Сон и отдых", systemImage: "moon.stars") }
+                Spacer()
+                NavigationLink { PetView() } label: { Label(store.wellness.pet.name, systemImage: "pawprint") }
+            }.padding(.vertical, 8)
             CalendarCard()
             NavigationLink { ReportView() } label: {
                 Label("Отправить отчёт", systemImage: "square.and.arrow.up")
@@ -121,6 +132,7 @@ struct WellbeingEditor: View {
     @Environment(\.dismiss) private var dismiss
     let date: Date
     @State private var energy = 3
+    @State private var mood = 0
     @State private var wellbeing = ""
     @State private var comment = ""
     var body: some View {
@@ -130,6 +142,10 @@ struct WellbeingEditor: View {
                     Picker("Энергия", selection: $energy) { ForEach(1...5, id: \.self) { Text("\($0)").tag($0) } }.pickerStyle(.segmented)
                     Text("1 — хочется отдыха, 5 — много сил. Любое состояние нормально.").font(.footnote)
                 }
+                Picker("Настроение", selection: $mood) {
+                    Text("Не отмечено").tag(0)
+                    ForEach(1...5, id: \.self) { Text("\($0) из 5").tag($0) }
+                }
                 Section("Самочувствие") { TextField("Как чувствует себя тело?", text: $wellbeing, axis: .vertical).lineLimit(3...6) }
                 Section("Личный комментарий") { TextField("Что хочется рассказать?", text: $comment, axis: .vertical).lineLimit(3...6) }
             }.navigationTitle("На связи с собой").navigationBarTitleDisplayMode(.inline)
@@ -137,13 +153,17 @@ struct WellbeingEditor: View {
                     ToolbarItem(placement: .cancellationAction) { Button("Отмена") { dismiss() } }
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Сохранить") {
-                            store.updateDay(date) { $0.energy = energy; $0.wellbeing = wellbeing; $0.comment = comment }
+                            store.updateDay(date) {
+                                $0.energy = energy; $0.wellbeing = wellbeing; $0.comment = comment
+                                var d = $0.details ?? DayDetails(); d.mood = mood == 0 ? nil : mood; $0.details = d
+                            }
                             if store.error == nil { dismiss() }
                         }
                     }
                 }
         }.onAppear {
             let day = store.record(on: date)
+            mood = day.details?.mood ?? 0
             energy = day.energy ?? 3; wellbeing = day.wellbeing; comment = day.comment
         }
     }

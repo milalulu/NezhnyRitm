@@ -22,6 +22,8 @@ struct WorkoutView: View {
             if session.exercises.isEmpty {
                 EmptyNote(symbol: "leaf", title: "День без спешки", message: "Можно отдохнуть или выбрать приятную лёгкую активность. Ничего не нужно наверстывать.")
             } else if session.movedTo == nil {
+                NavigationLink { CoachView(date: store.selectedDate) } label: { Label("Начать с тренером", systemImage: "figure.flexibility") }
+                    .buttonStyle(PrimaryButtonStyle()).accessibilityIdentifier("openCoach")
                 Text("Двигайся плавно, дыши свободно. Выбирай комфортную амплитуду; при боли остановись.")
                     .font(.footnote).foregroundStyle(.secondary)
                 ForEach(session.exercises) { exercise in
@@ -104,6 +106,7 @@ struct ExerciseCard: View {
 }
 
 struct RestTimerView: View {
+    @EnvironmentObject private var store: JournalStore
     @AppStorage("restEnd") private var end: Double = 0
     @State private var duration = 60
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -127,7 +130,7 @@ struct RestTimerView: View {
                         let settings = await center.notificationSettings()
                         if settings.authorizationStatus == .authorized {
                             let content = UNMutableNotificationContent()
-                            content.title = "Пауза завершена"; content.body = "Продолжай, когда будешь готова."; content.sound = .default
+                            content.title = store.wellness.privateNotifications ? "Ритм" : "Пауза завершена"; content.body = store.wellness.privateNotifications ? "Твоё напоминание." : "Продолжай, когда будешь готова."; content.sound = .default
                             try? await center.add(UNNotificationRequest(identifier: "rest-timer", content: content,
                                 trigger: UNTimeIntervalNotificationTrigger(timeInterval: Double(seconds), repeats: false)))
                         }

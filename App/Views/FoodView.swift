@@ -17,6 +17,22 @@ struct FoodView: View {
                     Label("Добавить приём пищи", systemImage: "plus")
                 }.buttonStyle(PrimaryButtonStyle()).accessibilityIdentifier("addMeal")
             }
+            if !store.wellness.favorites.isEmpty {
+                SoftCard(tint: .lavender) {
+                    DisclosureGroup("Любимые блюда") {
+                        ForEach(store.wellness.favorites) { favorite in
+                            HStack {
+                                Button(favorite.text.isEmpty ? favorite.category : favorite.text) {
+                                    var copy = favorite; copy.id = UUID(); copy.createdAt = Date(); copy.details = nil
+                                    editing = copy
+                                }.lineLimit(2)
+                                Spacer()
+                                Button { store.updateWellness { $0.favorites.removeAll { $0.id == favorite.id } } } label: { Image(systemName: "heart.slash").frame(width: 44, height: 44) }.accessibilityLabel("Убрать из любимых")
+                            }
+                        }
+                    }
+                }
+            }
             if meals.isEmpty {
                 EmptyNote(symbol: "cup.and.saucer", title: "Место для твоего дня", message: "Текст, фото или несколько слов — выбери удобный способ сохранить воспоминание о еде.")
             }
@@ -26,6 +42,7 @@ struct FoodView: View {
                         Text(meal.category).font(.headline)
                         Spacer()
                         Menu {
+                            Button("В любимые блюда") { store.addFavorite(meal) }
                             Button("Редактировать") { editing = meal }
                             Button("Удалить", role: .destructive) { deleteMeal = meal }
                         } label: { Image(systemName: "ellipsis").frame(width: 44, height: 44) }.accessibilityLabel("Действия с приёмом пищи")
@@ -35,6 +52,10 @@ struct FoodView: View {
                             .accessibilityLabel("Фотография приёма пищи")
                     }
                     if !meal.text.isEmpty { Text(meal.text) }
+                    if let details = meal.details {
+                        Text("Сытость: \(details.satiety)").font(.caption).foregroundStyle(.secondary)
+                        if !details.feeling.isEmpty { Text(details.feeling).font(.subheadline) }
+                    }
                 }
             }
         }.navigationTitle("Питание").navigationBarTitleDisplayMode(.inline)
@@ -57,6 +78,8 @@ struct MealEditor: View {
     @State private var category = "Завтрак"
     @State private var customCategory = ""
     @State private var photoItem: PhotosPickerItem?
+    @State private var details = MealDetails()
+    @State private var favorite = false
     @State private var loading = false
     @State private var photoError: String?
     private let categories = ["Завтрак", "Обед", "Ужин", "Перекус", "Свой вариант"]
@@ -67,6 +90,13 @@ struct MealEditor: View {
                 if category == "Свой вариант" { TextField("Название приёма пищи", text: $customCategory) }
                 Section("Что было на тарелке?") {
                     TextField("Несколько слов о еде", text: $meal.text, axis: .vertical).lineLimit(4...10).accessibilityIdentifier("mealText")
+                }
+                Section("Ощущения — по желанию") {
+                    Picker("Сытость", selection: $details.satiety) {
+                        ForEach(["Не отмечена", "Ещё хочется есть", "Комфортная сытость", "Очень сыта"], id: \.self) { Text($0).tag($0) }
+                    }
+                    TextField("Самочувствие после еды", text: $details.feeling, axis: .vertical).lineLimit(2...4)
+                    Toggle("Сохранить в любимых блюдах", isOn: $favorite)
                 }
                 Section("Фотография") {
                     if let bytes = meal.photo, let image = UIImage(data: bytes) {
@@ -84,10 +114,11 @@ struct MealEditor: View {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Сохранить") {
                             meal.category = category == "Свой вариант" ? customCategory.trimmingCharacters(in: .whitespacesAndNewlines) : category
+                            meal.details = details
                             store.updateDay(date) { day in
                                 if let i = day.meals.firstIndex(where: { $0.id == meal.id }) { day.meals[i] = meal } else { day.meals.append(meal) }
                             }
-                            if store.error == nil { dismiss() }
+                            if store.error == nil { if favorite { store.addFavorite(meal) }; dismiss() }
                         }.disabled(loading || (meal.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && meal.photo == nil) || (category == "Свой вариант" && customCategory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty))
                             .accessibilityIdentifier("saveMeal")
                     }
@@ -95,6 +126,7 @@ struct MealEditor: View {
         }.onAppear {
             category = categories.contains(meal.category) ? meal.category : "Свой вариант"
             customCategory = meal.category
+            details = meal.details ?? MealDetails()
         }
         .task(id: photoItem) {
             guard let item = photoItem else { return }

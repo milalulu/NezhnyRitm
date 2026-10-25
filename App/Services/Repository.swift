@@ -10,6 +10,7 @@ struct Repository {
     func load() throws -> AppData {
         guard FileManager.default.fileExists(atPath: url.path) else { return AppData() }
         let bytes = try Data(contentsOf: url)
+        guard bytes.count <= 100_000_000 else { throw DataError.tooLarge }
         let original = try JSONDecoder().decode(AppData.self, from: bytes).validated()
         let migrated = try original.migrated()
         if original.version == 1 {

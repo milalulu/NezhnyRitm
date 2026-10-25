@@ -18,6 +18,7 @@ final class JournalStore: ObservableObject {
             self.error = "Не удалось прочитать дневник. Исходный файл сохранён. Импортируйте резервную копию в настройках. \(error.localizedDescription)"
         }
         reconcileHistory()
+        reconcileRoutines()
     }
 
     func record(on date: Date) -> DayRecord { data.days[DayKey.string(date)] ?? DayRecord() }
@@ -32,7 +33,7 @@ final class JournalStore: ObservableObject {
             error = "Сначала восстановите дневник в настройках. Исходный файл защищён от перезаписи."
             return
         }
-        do { try repository.save(newData); data = newData }
+        do { try repository.save(newData); data = newData; WidgetPublisher.publish(newData) }
         catch { self.error = "Не удалось сохранить изменения: \(error.localizedDescription)" }
     }
     // Materialize past days before changing the recurring schedule.
@@ -69,7 +70,15 @@ final class JournalStore: ObservableObject {
         if sets.contains(index) { sets.remove(index) } else { sets.insert(index) }
         session.completed[exercise.id.uuidString] = sets
         session.skipped = false
-        updateDay(date) { $0.workout = session }
+        var next = data
+        var day = record(on: date); day.workout = session
+        next.days[DayKey.string(date)] = day
+        if session.isComplete {
+            var w = wellness
+            w.pet.rewardKeys.insert("workout:\(DayKey.string(date))")
+            next.wellness = w
+        }
+        commit(next)
     }
     func toggleSkip(on date: Date) {
         var session = session(on: date)
@@ -78,6 +87,7 @@ final class JournalStore: ObservableObject {
     }
     func savePlan(_ plan: WorkoutPlan) {
         reconcileHistory()
+        reconcileRoutines()
         var next = data
         guard let i = next.schedule.firstIndex(where: { $0.weekday == plan.weekday }) else { return }
         next.schedule[i] = plan
@@ -127,12 +137,13 @@ final class JournalStore: ObservableObject {
         return "В вашем темпе"
     }
     func importBackup(_ imported: AppData) throws {
-        let valid = try imported.validated()
+        let valid = try imported.migrated()
         _ = try repository.safetyCopy()
         try repository.save(valid)
         data = valid
         recoveryRequired = false
         reconcileHistory()
+        reconcileRoutines()
     }
     func backupURL() throws -> URL {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("NezhnyRitm-\(DayKey.string(Date())).json")

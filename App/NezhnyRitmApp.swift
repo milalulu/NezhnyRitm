@@ -4,6 +4,7 @@ import SwiftUI
 struct NezhnyRitmApp: App {
     @StateObject private var store: JournalStore
     @StateObject private var health = HealthService()
+    @StateObject private var privacy = PrivacyService()
     @StateObject private var reminders = ReminderService()
     @Environment(\.scenePhase) private var phase
 
@@ -17,7 +18,8 @@ struct NezhnyRitmApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environmentObject(store).environmentObject(health).environmentObject(reminders)
+                .environmentObject(store).environmentObject(health).environmentObject(reminders).environmentObject(privacy)
+                .background(PrivacyWindowAnchor(privacy: privacy))
                 .environment(\.locale, Locale(identifier: "ru_RU"))
                 .tint(.accent)
                 .preferredColorScheme(store.data.preferences.theme == "system" ? nil : (store.data.preferences.theme == "dark" ? .dark : .light))
@@ -33,6 +35,8 @@ struct NezhnyRitmApp: App {
     }
     private func refresh() async {
         store.reconcileHistory()
+        store.reconcileRoutines()
+        WidgetPublisher.publish(store.data)
         await health.sync(store: store)
         await reminders.apply(store: store)
     }

@@ -9,11 +9,17 @@ struct MoreView: View {
                 Text("На своей стороне").font(.largeTitle.bold())
                 Text("Твой дневник движения, питания и маленьких забот о себе. Без регистрации. В твоём темпе.")
             }
+            NavigationLink { RoutinesView() } label: { Label("Календарь привычек", systemImage: "checkmark.circle") }.accessibilityIdentifier("openRoutines")
+            NavigationLink { RoutinesView(kind: .care) } label: { Label("Забота о себе", systemImage: "sparkles") }.accessibilityIdentifier("openCare")
+            NavigationLink { SleepView() } label: { Label("Сон и восстановление", systemImage: "moon.stars") }.accessibilityIdentifier("openSleep")
+            NavigationLink { PetView() } label: { Label("Комната Плюши", systemImage: "pawprint") }.accessibilityIdentifier("openPet")
+            NavigationLink { StatisticsView() } label: { Label("Статистика", systemImage: "chart.xyaxis.line") }.accessibilityIdentifier("openStatistics")
+            NavigationLink { PrivacyView() } label: { Label("Приватность и виджеты", systemImage: "lock.shield") }.accessibilityIdentifier("openPrivacy")
             NavigationLink { ReportView() } label: { Label("Отчёт для Астраси", systemImage: "doc.text") }.buttonStyle(PrimaryButtonStyle())
             NavigationLink { WorkoutHistoryView() } label: { Label("История движения", systemImage: "chart.bar") }.padding(.vertical, 8)
             NavigationLink { ScheduleView() } label: { Label("Расписание", systemImage: "calendar") }.padding(.vertical, 8)
             NavigationLink { SettingsView() } label: { Label("Настройки и резервная копия", systemImage: "gearshape") }.padding(.vertical, 8)
-            Text("Мой нежный ритм · 1.0\nЛичные записи хранятся на устройстве. Интернет нужен только для перехода в ChatGPT или передачи отчёта выбранным способом.")
+            Text("Мой нежный ритм · 2.0\nЛичные записи хранятся на устройстве. Интернет нужен только для перехода в ChatGPT или передачи отчёта выбранным способом.")
                 .font(.footnote).foregroundStyle(.secondary)
         }.navigationTitle("Мой ритм")
     }
@@ -57,7 +63,7 @@ struct SettingsView: View {
                 }
                 Text(reminders.message).font(.caption).foregroundStyle(.secondary)
                 Button("Открыть настройки iPhone") { openURL(URL(string: UIApplication.openSettingsURLString)!) }
-                Text("Напоминания о занятиях планируются на 8 недель вперёд и обновляются при открытии дневника. При выключенном звуке или режиме фокусирования уведомление может быть тихим.").font(.caption)
+                Text("Ближайшие напоминания о занятиях и привычках планируются в пределах 8 недель (до 59 событий) и обновляются при открытии дневника. При выключенном звуке или режиме фокусирования уведомление может быть тихим.").font(.caption)
             }
             Section("Данные") {
                 Button { exportBackup() } label: { Label(store.recoveryRequired ? "Сохранить исходный файл" : "Экспорт JSON с фотографиями", systemImage: "square.and.arrow.up") }
