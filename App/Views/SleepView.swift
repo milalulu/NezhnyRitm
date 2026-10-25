@@ -53,7 +53,7 @@ struct SleepEditor: View {
             Form {
                 Text("Запись относится к выбранному дню пробуждения. Дневной сон тоже можно записать.").font(.footnote)
                 DatePicker("Заснула", selection: $start)
-                DatePicker("Проснулась", selection: $end)
+                DatePicker("Проснулась", selection: $end, in: DayKey.calendar.startOfDay(for: date)...DayKey.adding(1, to: DayKey.calendar.startOfDay(for: date)).addingTimeInterval(-1))
                 Text(String(format: "Продолжительность: %.1f ч", max(0, hours)))
                 Picker("Как ощущается отдых", selection: $quality) {
                     Text("Не отмечено").tag(0)

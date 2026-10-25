@@ -67,6 +67,25 @@ final class FlowTests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["heartBalance"].firstMatch.waitForExistence(timeout: 5))
         capture("07-pet", app: app)
     }
+    func testCoachAndRestTimerInDarkTheme() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--uitesting", "--coach-testing", "-AppleLanguages", "(ru)", "-AppleLocale", "ru_RU"]
+        app.launch()
+        app.tabBars.buttons["Движение"].tap()
+        app.buttons["openCoach"].tap()
+        XCTAssertTrue(app.staticTexts["Тренер рядом"].waitForExistence(timeout: 5))
+        capture("08-coach-dark", app: app)
+        let set = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'set-'")).firstMatch
+        reveal(set, app: app)
+        set.tap()
+        XCTAssertTrue(set.label.contains(", выполнен"))
+        let pause = app.buttons["Начать паузу"]
+        reveal(pause, app: app)
+        pause.tap()
+        XCTAssertTrue(app.buttons["Завершить паузу"].waitForExistence(timeout: 5))
+        capture("09-rest-dark", app: app)
+        app.buttons["Завершить паузу"].tap()
+    }
     private func reveal(_ element: XCUIElement, app: XCUIApplication) {
         for _ in 0..<8 {
             if element.exists && element.isHittable { return }

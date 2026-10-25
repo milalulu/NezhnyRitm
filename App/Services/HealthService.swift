@@ -12,6 +12,7 @@ final class HealthService: ObservableObject {
     private let healthStore = HKHealthStore()
     private var observers: [HKObserverQuery] = []
     private weak var journal: JournalStore?
+    private var pendingDays: Int?
     var available: Bool { HKHealthStore.isHealthDataAvailable() }
     #else
     var available: Bool { false }
@@ -40,9 +41,16 @@ final class HealthService: ObservableObject {
     }
     func sync(store: JournalStore, days: Int = 7) async {
         #if HEALTHKIT
-        guard available, store.data.preferences.healthEnabled, !syncing else { return }
+        guard available, store.data.preferences.healthEnabled else { return }
+        if syncing { pendingDays = max(pendingDays ?? 1, days); return }
         syncing = true
-        defer { syncing = false }
+        defer {
+            syncing = false
+            if let requested = pendingDays {
+                pendingDays = nil
+                Task { await self.sync(store: store, days: requested) }
+            }
+        }
         journal = store
         let type = HKQuantityType.quantityType(forIdentifier: .stepCount)!
         if observers.isEmpty {

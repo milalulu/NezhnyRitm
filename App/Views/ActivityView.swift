@@ -54,7 +54,7 @@ struct ActivityView: View {
             }
             SoftCard {
                 SectionTitle(title: "Apple Здоровье", symbol: "heart.fill")
-                Text(health.buildSupportsHealth ? "Читаем только шаги. Данные остаются на этом iPhone." : "В сборке для SideStore шаги записываются вручную. Для автоматической синхронизации нужна сборка HealthKit и совместимая подпись.").font(.subheadline)
+                Text(health.buildSupportsHealth ? "Читаем только шаги и сон. Данные остаются на этом iPhone." : "В сборке для SideStore шаги записываются вручную. Для автоматической синхронизации нужна сборка HealthKit и совместимая подпись.").font(.subheadline)
                 if health.available {
                     Button(store.data.preferences.healthEnabled ? "Проверить доступ и обновить" : "Подключить «Здоровье»") {
                         Task { await health.connect(to: store) }

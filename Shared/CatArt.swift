@@ -31,7 +31,7 @@ struct CatArt: View {
         .accessibilityElement(children: .ignore).accessibilityLabel("Уютный котик Плюша")
     }
     private var ear: some View {
-        ZStack { RoundedRectangle(cornerRadius: 18).fill(Color(red: 0.95, green: 0.84, blue: 0.73)); RoundedRectangle(cornerRadius: 12).fill(Color.rose).padding(9) }
+        ZStack { CatEarShape().fill(Color(red: 0.95, green: 0.84, blue: 0.73)); CatEarShape().fill(Color.rose).padding(9) }
     }
 }
 
@@ -44,6 +44,17 @@ private struct BowArt: View {
                 p.addLine(to: CGPoint(x: g.size.width, y: 0)); p.addLine(to: CGPoint(x: 0, y: g.size.height)); p.closeSubpath()
             }.fill(Color(red: 0.8, green: 0.32, blue: 0.5))
             Circle().fill(Color.rose).frame(width: g.size.height * 0.6, height: g.size.height * 0.6).position(x: g.size.width / 2, y: g.size.height / 2)
+        }
+    }
+}
+
+private struct CatEarShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path { p in
+            p.move(to: CGPoint(x: rect.minX, y: rect.maxY))
+            p.addQuadCurve(to: CGPoint(x: rect.midX, y: rect.minY), control: CGPoint(x: rect.minX, y: rect.minY))
+            p.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.maxY), control: CGPoint(x: rect.maxX, y: rect.minY))
+            p.closeSubpath()
         }
     }
 }

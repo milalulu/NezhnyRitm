@@ -68,7 +68,7 @@ struct StatisticsView: View {
                 }
             }
         }.navigationTitle("Мой ритм в цифрах").navigationBarTitleDisplayMode(.inline)
-            .task(id: period) { await health.sync(store: store, days: period) }
+            .task(id: "\(period)-\(DayKey.string(store.selectedDate))") { await health.sync(store: store, days: period) }
     }
     private var summary: String {
         let total = samples.reduce(0, +)

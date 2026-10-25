@@ -12,7 +12,16 @@ struct NezhnyRitmApp: App {
         if ProcessInfo.processInfo.arguments.contains("--uitesting") {
             let url = FileManager.default.temporaryDirectory.appendingPathComponent("ui-test-journal.json")
             try? FileManager.default.removeItem(at: url)
-            _store = StateObject(wrappedValue: JournalStore(repository: Repository(url: url)))
+            let repository = Repository(url: url)
+            if ProcessInfo.processInfo.arguments.contains("--coach-testing") {
+                var fixture = AppData()
+                let weekday = DayKey.calendar.component(.weekday, from: Date())
+                fixture.schedule[weekday - 1].exercises = SeedProgram.make()[0].exercises
+                fixture.schedule[weekday - 1].title = "Ягодицы и бёдра"
+                fixture.preferences.theme = "dark"
+                try? repository.save(fixture)
+            }
+            _store = StateObject(wrappedValue: JournalStore(repository: repository))
         } else { _store = StateObject(wrappedValue: JournalStore()) }
     }
     var body: some Scene {
