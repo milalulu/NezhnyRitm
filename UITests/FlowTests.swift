@@ -27,6 +27,7 @@ final class FlowTests: XCTestCase {
         app.swipeDown()
         capture("03-steps", app: app)
         app.tabBars.buttons["Мой ритм"].tap()
+        reveal(app.buttons["Отчёт для Астраси"], app: app)
         app.buttons["Отчёт для Астраси"].tap()
         app.buttons["generateReport"].tap()
         let report = app.textViews["reportText"]
@@ -35,6 +36,42 @@ final class FlowTests: XCTestCase {
         XCTAssertTrue(value.contains("Каша и ягоды"))
         XCTAssertTrue(value.contains("2345"))
         capture("04-report", app: app)
+    }
+    func testHabitsSleepAndPetFlow() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--uitesting", "-AppleLanguages", "(ru)", "-AppleLocale", "ru_RU"]
+        app.launch()
+        app.tabBars.buttons["Мой ритм"].tap()
+        app.buttons["openRoutines"].tap()
+        app.buttons["addRoutine"].tap()
+        let title = app.textFields["routineTitle"]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        title.tap(); title.typeText("Чашка спокойствия")
+        app.buttons["saveRoutine"].tap()
+        let routine = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'routine-' AND label CONTAINS 'Чашка спокойствия'")).firstMatch
+        reveal(routine, app: app)
+        XCTAssertTrue(routine.exists)
+        routine.tap()
+        XCTAssertEqual(routine.value as? String, "Выполнено")
+        capture("05-habits", app: app)
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        reveal(app.buttons["openSleep"], app: app)
+        app.buttons["openSleep"].tap()
+        app.buttons["addSleep"].tap()
+        app.buttons["saveSleep"].tap()
+        XCTAssertTrue(app.staticTexts["8.0 ч"].waitForExistence(timeout: 5))
+        capture("06-sleep", app: app)
+        app.navigationBars.buttons.element(boundBy: 0).tap()
+        reveal(app.buttons["openPet"], app: app)
+        app.buttons["openPet"].tap()
+        XCTAssertTrue(app.otherElements["heartBalance"].exists || app.staticTexts["heartBalance"].exists)
+        capture("07-pet", app: app)
+    }
+    private func reveal(_ element: XCUIElement, app: XCUIApplication) {
+        for _ in 0..<8 {
+            if element.exists && element.isHittable { return }
+            app.swipeUp()
+        }
     }
     private func capture(_ name: String, app: XCUIApplication) {
         let attachment = XCTAttachment(screenshot: app.screenshot())

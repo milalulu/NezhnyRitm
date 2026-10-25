@@ -1,0 +1,32 @@
+include:
+  - path: project.yml
+    relativePaths: false
+configs:
+  FullRelease: release
+targets:
+  NezhnyRitm:
+    dependencies:
+      - target: RhythmWidgets
+        embed: true
+    settings:
+      configs:
+        FullRelease:
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: '$(inherited) HEALTHKIT WIDGETS'
+          CODE_SIGN_ENTITLEMENTS: App/Resources/Full.entitlements
+          INFOPLIST_KEY_NRAppGroup: group.app.nezhnyritm.shared
+          GENERATE_INFOPLIST_FILE: YES
+  RhythmWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Widgets
+      - Shared
+      - path: App/Resources/Assets.xcassets
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.nezhnyritm.NezhnyRitm.widgets
+        INFOPLIST_FILE: Widgets/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Widgets/Widgets.entitlements
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: ''
