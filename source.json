@@ -13,11 +13,20 @@
       "bundleIdentifier": "app.nezhnyritm.NezhnyRitm",
       "developerName": "milalulu",
       "subtitle": "Движение, забота о себе и маленькие радости",
-      "localizedDescription": "Нежный дневник в твоём темпе: тренировки, привычки, питание с фотографиями, сон, настроение и уютный котик Плюша. Без регистрации, калорий, контроля веса и штрафов за пропуски.\n\nДанные хранятся локально. Есть Face ID или код-пароль iPhone, резервные копии JSON и отчёты для ChatGPT с отправкой только по твоему действию.\n\nЭто базовая версия для SideStore: шаги и сон записываются вручную, питомец работает внутри приложения. HealthKit и виджеты доступны отдельными IPA в репозитории. На домашнем экране приложение называется «Ритм».",
+      "localizedDescription": "Нежный дневник в твоём темпе: тренировки, привычки, питание с фотографиями, сон, настроение и уютный котик Плюша. Без регистрации, калорий, контроля веса и штрафов за пропуски.\n\nДанные хранятся локально. Есть Face ID или код-пароль iPhone, резервные копии JSON и отчёты для ChatGPT с отправкой только по твоему действию.\n\nЭто базовая версия для SideStore: шаги и сон записываются вручную, питомец работает внутри приложения. HealthKit и виджеты доступны отдельными IPA в репозитории. На домашнем экране приложение называется Ritm.",
       "iconURL": "https://raw.githubusercontent.com/milalulu/NezhnyRitm/v2.0.0/App/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
       "tintColor": "79528F",
       "category": "lifestyle",
       "versions": [
+        {
+          "version": "2.0.1",
+          "buildVersion": "3",
+          "date": "2026-10-25",
+          "localizedDescription": "Исправлена совместимость подписи SideStore: имя под иконкой теперь Ritm (латиницей). Русский интерфейс, идентификатор приложения и совместимость дневника сохранены.",
+          "downloadURL": "https://github.com/milalulu/NezhnyRitm/releases/download/v2.0.1/NezhnyRitm.ipa",
+          "size": 828315,
+          "minOSVersion": "16.0"
+        },
         {
           "version": "2.0.0",
           "buildVersion": "2",
@@ -28,11 +37,11 @@
           "minOSVersion": "16.0"
         }
       ],
-      "version": "2.0.0",
+      "version": "2.0.1",
       "versionDate": "2026-10-25",
-      "versionDescription": "Версия 2.0: тренер со схемами упражнений, привычки и уход, фотодневник, сон, котик Плюша, статистика, приватность и отчёты за день и неделю. Сохранена совместимость с дневником 1.0.",
-      "downloadURL": "https://github.com/milalulu/NezhnyRitm/releases/download/v2.0.0/NezhnyRitm.ipa",
-      "size": 828317,
+      "versionDescription": "Исправлена совместимость подписи SideStore: имя под иконкой теперь Ritm (латиницей). Русский интерфейс, идентификатор приложения и совместимость дневника сохранены.",
+      "downloadURL": "https://github.com/milalulu/NezhnyRitm/releases/download/v2.0.1/NezhnyRitm.ipa",
+      "size": 828315,
       "appPermissions": {
         "entitlements": [],
         "privacy": {

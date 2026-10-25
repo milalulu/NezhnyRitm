@@ -14,7 +14,7 @@ https://raw.githubusercontent.com/milalulu/NezhnyRitm/main/source.json
 
 ## Получить и установить IPA
 
-Откройте успешный запуск [Build iPhone IPA](https://github.com/milalulu/NezhnyRitm/actions/workflows/build-ipa.yml), скачайте **NezhnyRitm-SideStore**, распакуйте ZIP и импортируйте `NezhnyRitm.ipa` в SideStore. На домашнем экране приложение называется **«Ритм»**. [Пошаговая установка и capabilities](docs/INSTALL.md).
+Откройте успешный запуск [Build iPhone IPA](https://github.com/milalulu/NezhnyRitm/actions/workflows/build-ipa.yml), скачайте **NezhnyRitm-SideStore**, распакуйте ZIP и импортируйте `NezhnyRitm.ipa` в SideStore. Начиная с 2.0.1 на домашнем экране приложение называется **Ritm**, чтобы кириллица в имени не мешала регистрации приложения в старых версиях SideSign. Интерфейс остаётся русским. [Пошаговая установка и capabilities](docs/INSTALL.md).
 
 | Артефакт | Возможности |
 | --- | --- |
