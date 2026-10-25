@@ -1,0 +1,46 @@
+{
+  "name": "NezhnyRitm — Мой нежный ритм",
+  "identifier": "app.nezhnyritm.source",
+  "sourceURL": "https://raw.githubusercontent.com/milalulu/NezhnyRitm/main/source.json",
+  "subtitle": "Твой дневник заботы о себе",
+  "description": "Источник приложения NezhnyRitm для установки и обновления через SideStore.",
+  "iconURL": "https://raw.githubusercontent.com/milalulu/NezhnyRitm/v2.0.0/App/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+  "website": "https://github.com/milalulu/NezhnyRitm",
+  "tintColor": "79528F",
+  "apps": [
+    {
+      "name": "Мой нежный ритм",
+      "bundleIdentifier": "app.nezhnyritm.NezhnyRitm",
+      "developerName": "milalulu",
+      "subtitle": "Движение, забота о себе и маленькие радости",
+      "localizedDescription": "Нежный дневник в твоём темпе: тренировки, привычки, питание с фотографиями, сон, настроение и уютный котик Плюша. Без регистрации, калорий, контроля веса и штрафов за пропуски.\n\nДанные хранятся локально. Есть Face ID или код-пароль iPhone, резервные копии JSON и отчёты для ChatGPT с отправкой только по твоему действию.\n\nЭто базовая версия для SideStore: шаги и сон записываются вручную, питомец работает внутри приложения. HealthKit и виджеты доступны отдельными IPA в репозитории. На домашнем экране приложение называется «Ритм».",
+      "iconURL": "https://raw.githubusercontent.com/milalulu/NezhnyRitm/v2.0.0/App/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "tintColor": "79528F",
+      "category": "lifestyle",
+      "versions": [
+        {
+          "version": "2.0.0",
+          "buildVersion": "2",
+          "date": "2026-10-25",
+          "localizedDescription": "Версия 2.0: тренер со схемами упражнений, привычки и уход, фотодневник, сон, котик Плюша, статистика, приватность и отчёты за день и неделю. Сохранена совместимость с дневником 1.0.",
+          "downloadURL": "https://github.com/milalulu/NezhnyRitm/releases/download/v2.0.0/NezhnyRitm.ipa",
+          "size": 828317,
+          "minOSVersion": "16.0"
+        }
+      ],
+      "version": "2.0.0",
+      "versionDate": "2026-10-25",
+      "versionDescription": "Версия 2.0: тренер со схемами упражнений, привычки и уход, фотодневник, сон, котик Плюша, статистика, приватность и отчёты за день и неделю. Сохранена совместимость с дневником 1.0.",
+      "downloadURL": "https://github.com/milalulu/NezhnyRitm/releases/download/v2.0.0/NezhnyRitm.ipa",
+      "size": 828317,
+      "appPermissions": {
+        "entitlements": [],
+        "privacy": {
+          "NSFaceIDUsageDescription": "Face ID открывает твой личный дневник.",
+          "NSHealthShareUsageDescription": "С твоего разрешения Ритм читает шаги и сон из «Здоровья». Данные остаются на iPhone, обязательных нормативов нет."
+        }
+      }
+    }
+  ],
+  "news": []
+}

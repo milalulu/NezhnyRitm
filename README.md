@@ -2,6 +2,16 @@
 
 Нативное iOS-приложение на SwiftUI, Swift 5.9+, iOS 16+, MVVM. Русский интерфейс, iPhone XR, светлая и тёмная темы. Локальный Codable JSON, без Swift-пакетов, регистрации, аналитики, калорий, контроля веса и обязательных нормативов.
 
+## Установить из источника SideStore
+
+В SideStore откройте **Sources → +**, вставьте ссылку и добавьте источник:
+
+```text
+https://raw.githubusercontent.com/milalulu/NezhnyRitm/main/source.json
+```
+
+Откройте **«Мой нежный ритм» → Install / Установить**. Источник устанавливает базовую версию: ручные шаги и сон, без HealthKit и виджетов. IPA размещена в публичном GitHub Release, вход в GitHub и ручное извлечение ZIP не нужны.
+
 ## Получить и установить IPA
 
 Откройте успешный запуск [Build iPhone IPA](https://github.com/milalulu/NezhnyRitm/actions/workflows/build-ipa.yml), скачайте **NezhnyRitm-SideStore**, распакуйте ZIP и импортируйте `NezhnyRitm.ipa` в SideStore. На домашнем экране приложение называется **«Ритм»**. [Пошаговая установка и capabilities](docs/INSTALL.md).
